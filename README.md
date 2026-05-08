@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="app.png" alt="TODO 提醒 - 应用截图" width="820" />
+<img src="screenshot.png" alt="TODO 提醒 - 应用截图" width="820" />
 
 # TODO 提醒
 
