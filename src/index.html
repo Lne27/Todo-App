@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TODO 提醒</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header id="header">
+      <div class="header-left">
+        <h1 class="app-title">待办事项</h1>
+      </div>
+      <div class="header-right">
+        <span id="progress-text" class="progress-text"></span>
+      </div>
+    </header>
+
+    <!-- Progress bar -->
+    <div id="progress-bar-container">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+
+    <!-- Filter bar -->
+    <div id="filter-bar">
+      <select id="filter-category" class="filter-select">
+        <option value="">全部分类</option>
+        <option value="工作">工作</option>
+        <option value="生活">生活</option>
+        <option value="学习">学习</option>
+        <option value="健康">健康</option>
+        <option value="其他">其他</option>
+      </select>
+      <select id="filter-priority" class="filter-select">
+        <option value="">全部优先级</option>
+        <option value="1">高优先级</option>
+        <option value="2">中优先级</option>
+        <option value="3">低优先级</option>
+      </select>
+      <label class="filter-check">
+        <input type="checkbox" id="filter-incomplete-only" checked>
+        仅未完成
+      </label>
+    </div>
+
+    <!-- Todo list -->
+    <div id="todo-list-container">
+      <div id="todo-list" class="todo-list"></div>
+    </div>
+
+    <!-- Quick add area -->
+    <div id="quick-add-area">
+      <div id="quick-add-input" class="quick-add" contenteditable="true" data-placeholder="输入新待办，回车添加..."></div>
+    </div>
+  </div>
+
+  <!-- Category/Priority dropdown (portal) -->
+  <div id="tag-dropdown" class="tag-dropdown hidden"></div>
+
+  <!-- Date picker popup with visual calendar -->
+  <div id="date-picker" class="date-picker hidden">
+    <div class="cal-header">
+      <span class="cal-nav" id="cal-prev">◀</span>
+      <span class="cal-month-year" id="cal-label"></span>
+      <span class="cal-nav" id="cal-next">▶</span>
+    </div>
+    <div class="cal-weekdays">
+      <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+    </div>
+    <div class="cal-days" id="cal-days"></div>
+    <div class="cal-time">
+      <input type="number" id="cal-hour" min="0" max="23" placeholder="时" class="cal-time-input">
+      <span>:</span>
+      <input type="number" id="cal-minute" min="0" max="59" placeholder="分" class="cal-time-input">
+    </div>
+    <div class="date-actions">
+      <span id="date-clear" class="date-clear">清除日期</span>
+      <span id="date-confirm" class="date-confirm">确定</span>
+    </div>
+  </div>
+
+  <script src="js/tree.js"></script>
+  <script src="js/interactions.js"></script>
+  <script src="js/dropdown.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
