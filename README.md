@@ -150,7 +150,7 @@ npm run tauri build
 构建完成后，安装包位于：
 
 ```
-src-tauri/target/release/bundle/nsis/TODO提醒_1.0.0_x64-setup.exe
+src-tauri/target/release/bundle/nsis/TODO提醒_1.0.1_x64-setup.exe
 ```
 
 ### 浏览器预览

@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use std::time::{Duration, Instant};
-use tauri::AppHandle;
+use tauri::{AppHandle, Emitter};
 use tauri::Manager;
 use crate::db::Database;
 
@@ -41,6 +41,7 @@ fn check_and_notify(app: &AppHandle, db: &Database) {
         return;
     }
     force_foreground(app);
+    let _ = app.emit("tray-show", ());
     send_notifications(app, db, &pending);
 }
 

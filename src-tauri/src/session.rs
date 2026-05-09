@@ -3,6 +3,7 @@ mod imp {
     use std::ffi::OsStr;
     use std::os::windows::ffi::OsStrExt;
     use tauri::AppHandle;
+    use tauri::Emitter;
     use tauri::Manager;
     use windows::Win32::System::RemoteDesktop::{
         WTSRegisterSessionNotification, WTSUnRegisterSessionNotification,
@@ -121,6 +122,7 @@ mod imp {
                         let _ = window.show();
                         let _ = window.unminimize();
                         let _ = window.set_focus();
+                        let _ = ctx.app.emit("tray-show", ());
                     }
                 }
             }

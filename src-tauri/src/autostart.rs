@@ -2,6 +2,7 @@
 mod imp {
     use std::ffi::OsStr;
     use std::os::windows::ffi::OsStrExt;
+    use std::sync::OnceLock;
     use windows::core::PCWSTR;
     use windows::Win32::System::Registry::{
         RegCreateKeyExW, RegSetValueExW, RegDeleteValueW, HKEY_CURRENT_USER,
@@ -12,6 +13,8 @@ mod imp {
 
     const RUN_KEY: &str = r"Software\Microsoft\Windows\CurrentVersion\Run";
     const APP_NAME: &str = "TODO-Reminder";
+
+    static SINGLETON_HANDLE: OnceLock<isize> = OnceLock::new();
 
     fn to_wide(s: &str) -> Vec<u16> {
         OsStr::new(s).encode_wide().chain(std::iter::once(0)).collect()
@@ -92,12 +95,17 @@ mod imp {
     pub fn is_already_running() -> bool {
         unsafe {
             let name = to_wide(&format!("Local\\{}-Singleton", APP_NAME));
-            let _handle = CreateMutexW(
+            let handle = match CreateMutexW(
                 None,
                 true,
                 PCWSTR::from_raw(name.as_ptr()),
-            );
-            GetLastError() == ERROR_ALREADY_EXISTS
+            ) {
+                Ok(h) => h,
+                Err(_) => return false,
+            };
+            let exists = GetLastError() == ERROR_ALREADY_EXISTS;
+            let _ = SINGLETON_HANDLE.set(handle.0 as isize);
+            exists
         }
     }
 }

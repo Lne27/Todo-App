@@ -1,5 +1,5 @@
 use tauri::{
-    AppHandle,
+    AppHandle, Emitter,
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     menu::{MenuBuilder, MenuItemBuilder},
     Manager,
@@ -32,6 +32,7 @@ pub fn create_tray(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
                     if let Some(window) = app.get_webview_window("main") {
                         let _ = window.show();
                         let _ = window.set_focus();
+                        let _ = app.emit("tray-show", ());
                     }
                 }
                 "quit" => {
@@ -50,6 +51,7 @@ pub fn create_tray(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
                 if let Some(window) = app.get_webview_window("main") {
                     let _ = window.show();
                     let _ = window.set_focus();
+                    let _ = app.emit("tray-show", ());
                 }
             }
         })

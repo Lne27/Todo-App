@@ -12,11 +12,11 @@ class TodoApp {
     this.quickAdd = document.getElementById('quick-add-input');
     this.progressBar = document.getElementById('progress-bar');
     this.progressText = document.getElementById('progress-text');
-    this.isTauri = typeof window.__TAURI_INTERNALS__ !== 'undefined';
-    // Get invoke function (works with both Tauri 2.x global paths)
-    this._invoke = this.isTauri
-      ? (window.__TAURI__?.core?.invoke || window.__TAURI_INTERNALS__?.invoke)
-      : null;
+    this.isTauri = typeof window.__TAURI__ !== 'undefined'
+      || typeof window.__TAURI_INTERNALS__ !== 'undefined';
+    this._invoke = window.__TAURI__?.core?.invoke
+      || window.__TAURI_INTERNALS__?.invoke
+      || null;
   }
 
   async init() {
@@ -193,6 +193,7 @@ class TodoApp {
 
   // === Backend Communication ===
   async _saveToBackend(id, changes, isNew = false, isDelete = false) {
+    this._saveToLocalStorage();
     if (this._invoke) {
       try {
         if (isDelete) {
@@ -215,35 +216,45 @@ class TodoApp {
             this.tree._rebuildTree();
             this.render();
             this._updateProgress();
+            this._saveToLocalStorage();
           }
         } else {
           await this._invoke('update_todo', { u: { id, ...changes } });
         }
       } catch (err) {
-        console.error('Backend save error:', err);
+        this._saveToLocalStorage();
       }
-    } else {
-      this._saveToLocalStorage();
     }
   }
 
-  async _loadData() {
-    if (this._invoke) {
+  async _loadData(forceLocal = false) {
+    if (!forceLocal && this._invoke) {
       try {
         const todos = await this._invoke('get_todos');
-        this.tree.load(todos);
+        if (todos && todos.length > 0) {
+          this.tree.load(todos);
+          this._saveToLocalStorage();
+          return;
+        }
       } catch (err) {
         console.error('Backend load error:', err);
-        this._loadFromLocalStorage();
       }
-    } else {
-      this._loadFromLocalStorage();
+    }
+    if (!this._loadFromLocalStorage()) {
+      this._loadDemoData();
     }
   }
 
   _setupTauriListeners() {
-    // Listen for window show event (when user clicks tray)
-    // In Tauri 2, we can listen for window events
+    const listen = window.__TAURI__?.event?.listen
+      || window.__TAURI_INTERNALS__?.event?.listen;
+    if (listen) {
+      listen('tray-show', async () => {
+        await this._loadData(true);
+        this.render();
+        this._updateProgress();
+      });
+    }
   }
 
   // === localStorage Fallback ===
@@ -260,13 +271,12 @@ class TodoApp {
       const data = localStorage.getItem('todo-app-data');
       if (data) {
         this.tree.load(JSON.parse(data));
-        return;
+        return true;
       }
     } catch (e) {
       // Ignore parse errors
     }
-    // Load demo data
-    this._loadDemoData();
+    return false;
   }
 
   _loadDemoData() {
