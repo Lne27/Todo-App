@@ -224,11 +224,11 @@ todo-app/
 
 ## 下载
 
-前往 [Releases](https://github.com/your-username/todo-app/releases/latest) 页面下载最新版本：
+前往 [Releases](https://github.com/Lne27/Todo-App/releases/latest) 页面下载最新版本：
 
 | 平台 | 文件 | 说明 |
 |:---|:---|:---|
-| Windows x64 | `TODO提醒_1.0.0_x64-setup.exe` | NSIS 安装包，用户级安装，无需管理员权限 |
+| Windows x64 | `TODO提醒_1.0.1_x64-setup.exe` | NSIS 安装包，用户级安装，无需管理员权限 |
 
 <br />
 
